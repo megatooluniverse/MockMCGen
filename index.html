@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="description" content="Free Online Mock Magazine Cover Generator. Create viral, fun, and highly realistic fake magazine covers instantly in your browser. No signup required!">
+    <meta name="keywords" content="mock magazine generator, fake magazine cover, magazine cover maker, online magazine creator, custom magazine cover, prank magazine">
+    <meta name="author" content="Mock Magazine Generator">
+    <meta name="robots" content="index, follow">
+    
+    <meta name="theme-color" content="#2563eb">
+    <title>Mock Magazine Cover Generator | Create & Download</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📰</text></svg>">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-color: #f3f4f6;
+            --text-color: #1f2937;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --card-bg: #ffffff;
+            --border-radius: 12px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --font-main: 'Inter', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-color); color: var(--text-color); font-family: var(--font-main);
+            min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        header { 
+            text-align: center; padding: 30px 15px 20px; background: #fff; 
+            box-shadow: var(--shadow-sm); margin-bottom: 20px;
+        }
+        h1 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; color: #111827; letter-spacing: -0.5px;}
+        .badge-warning {
+            background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;
+            padding: 4px 12px; font-size: 0.75rem; border-radius: 50px; display: inline-block;
+            font-weight: 700; margin-top: 10px;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .container {
+            display: flex; flex-wrap: wrap; gap: 30px; max-width: 1200px; margin: 0 auto; padding: 0 15px; flex: 1; width: 100%;
+        }
+        
+        /* CONTROLS (LEFT) */
+        .controls {
+            flex: 1; min-width: 100%; background: var(--card-bg); padding: 25px 20px;
+            border-radius: var(--border-radius); box-shadow: var(--shadow-md); border: 1px solid #e5e7eb;
+        }
+        
+        @media (min-width: 768px) {
+            .controls { min-width: 320px; flex: 1; padding: 30px; }
+            .preview-area { flex: 1.2; position: sticky; top: 20px; }
+            .container { padding: 0 20px; flex-wrap: nowrap;}
+        }
+
+        .section-title { font-size: 0.85rem; text-transform: uppercase; color: #6b7280; font-weight: 800; margin-bottom: 15px; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px; }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
+        label { font-size: 0.9rem; font-weight: 600; color: #374151; }
+        input[type="text"], select {
+            padding: 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; font-family: var(--font-main);
+            background: #f9fafb; color: #111827; width: 100%; -webkit-appearance: none;
+        }
+        input[type="text"]:focus, select:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        
+        input[type="file"] { 
+            padding: 12px; background: #f9fafb; border: 2px dashed #d1d5db; border-radius: 8px; width: 100%; cursor: pointer; 
+        }
+
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 25px; }
+        .btn-full { grid-column: span 2; }
+        
+        button.action-btn {
+            padding: 14px; cursor: pointer; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; transition: 0.2s;
+            display: flex; justify-content: center; align-items: center; text-align: center;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:disabled { background: #fca5a5; cursor: not-allowed; }
+        .btn-outline { background: white; border: 2px solid #e5e7eb; color: #374151; }
+
+        /* PREVIEW (RIGHT) - FULLY RESPONSIVE USING CONTAINER QUERIES */
+        .preview-area {
+            width: 100%; display: flex; justify-content: center; align-items: flex-start; padding-bottom: 40px;
+        }
+
+        .magazine-cover {
+            container-type: inline-size; /* THIS IS THE MAGIC FIX FOR MOBILE SCALING */
+            width: 100%; max-width: 450px; aspect-ratio: 3/4.2; position: relative;
+            background-color: #ddd; overflow: hidden; box-shadow: var(--shadow-lg);
+            border-radius: 8px; user-select: none;
+        }
+
+        .cover-bg { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
+
+        .cover-content {
+            position: relative; z-index: 2; width: 100%; height: 100%; padding: 6cqi 5cqi;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+
+        /* FLUID TYPOGRAPHY BASED ON CONTAINER WIDTH (cqi) */
+        .mag-title {
+            text-align: center; font-size: 13cqi; font-weight: 900; line-height: 1;
+            text-transform: uppercase; margin-bottom: 2cqi; width: 100%;
+            text-shadow: 0.5cqi 0.5cqi 3cqi rgba(0,0,0,0.6);
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        .headlines-container { 
+            margin-top: auto; margin-bottom: 8cqi; display: flex; flex-direction: column; gap: 1.5cqi; 
+        }
+        
+        .person-name {
+            font-size: 4cqi; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5cqi;
+            text-shadow: 0.2cqi 0.2cqi 1cqi rgba(0,0,0,0.8); width: fit-content;
+        }
+        
+        .main-headline {
+            font-size: 9cqi; font-weight: 900; line-height: 1.1; 
+            text-shadow: 0.5cqi 0.5cqi 2cqi rgba(0,0,0,0.7); word-wrap: break-word; hyphens: auto;
+        }
+        
+        .sub-headline {
+            font-size: 4.5cqi; font-weight: 600; text-shadow: 0.2cqi 0.2cqi 1cqi rgba(0,0,0,0.8); line-height: 1.3;
+        }
+
+        .feature-bullets {
+            position: absolute; right: 5cqi; top: 28cqi; width: 35cqi; text-align: right;
+        }
+        .bullet {
+            font-size: 3.5cqi; font-weight: 800; margin-bottom: 3cqi; border-bottom: 0.6cqi solid currentColor;
+            display: inline-block; padding-bottom: 0.5cqi; text-shadow: 0.2cqi 0.2cqi 1cqi rgba(0,0,0,0.6);
+        }
+
+        .watermark {
+            position: absolute; bottom: 3cqi; left: 50%; transform: translateX(-50%);
+            font-size: 2.5cqi; font-weight: 800; opacity: 0.9; z-index: 10; white-space: nowrap; 
+            color: #fff; background: rgba(0,0,0,0.7); padding: 1.5cqi 3cqi; border-radius: 10cqi; 
+            backdrop-filter: blur(4px); letter-spacing: 0.2cqi;
+        }
+
+        /* THEMES */
+        .theme-black-gold .mag-title { color: #d4af37; font-family: 'Times New Roman', serif; }
+        .theme-black-gold .main-headline { color: #fff; font-family: var(--font-main); }
+        .theme-black-gold .person-name { color: #d4af37; }
+        .theme-black-gold .sub-headline { color: #f3f4f6; }
+        .theme-black-gold .bullet { color: #fff; border-color: #d4af37; }
+
+        .theme-blue .mag-title { color: #fff; font-family: 'Arial Black', sans-serif; font-style: italic; }
+        .theme-blue .main-headline { color: #00e5ff; font-family: 'Verdana', sans-serif; text-transform: uppercase; }
+        .theme-blue .person-name { color: #fff; background: #000; padding: 1cqi 2cqi; }
+        .theme-blue .sub-headline { color: #fff; }
+        .theme-blue .bullet { color: #00e5ff; border-color: #fff; }
+
+        .theme-red .mag-title { color: #ff0000; background: #fff; padding: 1cqi 3cqi; font-family: 'Impact', sans-serif; box-shadow: 1.5cqi 1.5cqi 0 rgba(0,0,0,0.2); }
+        .theme-red .main-headline { color: #fff; font-family: 'Impact', sans-serif; text-transform: uppercase; }
+        .theme-red .person-name { color: #ff0000; background: white; padding: 1cqi 2.5cqi; font-weight: 900;}
+        .theme-red .sub-headline { color: #fff; font-weight: bold; background: #ff0000; padding: 1cqi 2cqi; width: fit-content;}
+        .theme-red .bullet { color: #fff; background: #cc0000; padding: 1.5cqi; border: none; }
+
+        .theme-white .mag-title { color: #000; font-family: 'Helvetica', sans-serif; font-weight: 300; letter-spacing: 1cqi; text-shadow: none; }
+        .theme-white .main-headline { color: #000; font-family: 'Helvetica', sans-serif; font-weight: 800; text-shadow: 0.5cqi 0.5cqi 2cqi rgba(255,255,255,0.8); }
+        .theme-white .person-name { color: #111; text-shadow: none; background: rgba(255,255,255,0.7); padding: 0.5cqi 2cqi;}
+        .theme-white .sub-headline { color: #111; text-shadow: 0.2cqi 0.2cqi 0px #fff; }
+        .theme-white .bullet { color: #000; border-color: #000; text-shadow: none; }
+
+        /* DOWNLOAD MODAL - MOBILE OPTIMIZED */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(4px); z-index: 20000; 
+            justify-content: center; align-items: center; padding: 15px;
+        }
+        .modal-content {
+            background: #fff; padding: 30px 20px; border-radius: 16px; width: 100%; max-width: 400px;
+            text-align: center; box-shadow: var(--shadow-lg); animation: popIn 0.3s ease-out forwards;
+        }
+        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        .modal-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .modal h2 { margin-bottom: 10px; color: #111827; font-size: 1.4rem; font-weight: 800; }
+        .modal p { font-size: 0.95rem; line-height: 1.5; color: #4b5563; margin-bottom: 20px; }
+        
+        .checkbox-wrapper {
+            background: #f0fdf4; border: 2px solid #bbf7d0; padding: 12px; border-radius: 10px;
+            display: flex; align-items: flex-start; gap: 10px; text-align: left; margin-bottom: 20px;
+        }
+        .checkbox-wrapper input { margin-top: 2px; width: 22px; height: 22px; accent-color: var(--success); cursor: pointer; flex-shrink: 0; }
+        .checkbox-wrapper label { font-size: 0.9rem; font-weight: 600; color: #166534; cursor: pointer; }
+
+        .modal-footer { display: flex; gap: 10px; flex-direction: column; }
+        .modal-footer button { width: 100%; padding: 14px; }
+        
+        @media (min-width: 480px) {
+            .modal-footer { flex-direction: row; }
+            .modal-content { padding: 40px; }
+        }
+
+        footer { text-align: center; margin-top: 40px; padding: 25px 15px; background: #fff; border-top: 1px solid #e5e7eb; }
+        .footer-links { margin-bottom: 15px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;}
+        .footer-links a { color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.85rem;}
+        .footer-copy { font-size: 0.8rem; color: #6b7280; }
+
+        #renderCanvas { display: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Mock Magazine Generator</h1>
+    <div class="badge-warning">ENTERTAINMENT & PARODY ONLY — NOT REAL NEWS</div>
+</header>
+
+<div class="container">
+    <div class="controls">
+        <div class="section-title">1. Content Customization</div>
+        
+        <div class="form-group">
+            <label>Magazine Title</label>
+            <input type="text" id="inpTitle" value="STYLE ICON" placeholder="e.g. VOGUE">
+        </div>
+
+        <div class="form-group">
+            <label>Cover Headline</label>
+            <input type="text" id="inpHeadline" value="THE FUTURE OF DESIGN" placeholder="Main Feature">
+        </div>
+
+        <div class="form-group">
+            <label>Sub-headline</label>
+            <input type="text" id="inpSub" value="10 Tips for Creative Freedom">
+        </div>
+
+        <div class="form-group">
+            <label>Person Name</label>
+            <input type="text" id="inpName" value="ALEXANDER SMITH">
+        </div>
+
+        <div class="section-title" style="margin-top: 25px;">2. Visual Style</div>
+
+        <div class="form-group">
+            <label>Upload Photo (Portrait recommended)</label>
+            <input type="file" id="inpFile" accept="image/png, image/jpeg, image/jpg">
+        </div>
+
+        <div class="form-group">
+            <label>Color Theme</label>
+            <select id="inpTheme">
+                <option value="theme-black-gold">Classic Black & Gold</option>
+                <option value="theme-blue">Modern Blue & White</option>
+                <option value="theme-red">Bold Red Impact</option>
+                <option value="theme-white">Minimalist White</option>
+            </select>
+        </div>
+
+        <div class="btn-group">
+            <button class="action-btn btn-outline" onclick="resetForm()">Reset</button>
+            <button class="action-btn btn-primary" onclick="updatePreview()">Update</button>
+            <button class="action-btn btn-danger btn-full" onclick="openDownloadModal()">Generate & Download</button>
+        </div>
+    </div>
+
+    <div class="preview-area">
+        <div class="magazine-cover theme-black-gold" id="magCover">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 400 600'%3E%3Crect width='400' height='600' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-weight='bold' font-size='20' fill='%239ca3af' text-anchor='middle' dy='.3em'%3EPHOTO PREVIEW%3C/text%3E%3C/svg%3E" alt="Cover Bg" class="cover-bg" id="previewImg">
+            
+            <div class="cover-content">
+                <div class="mag-title" id="prevTitle">STYLE ICON</div>
+                
+                <div class="feature-bullets">
+                    <div class="bullet">Exclusive Interview</div>
+                    <div class="bullet">Top 10 Trends</div>
+                    <div class="bullet">Life & Style</div>
+                </div>
+
+                <div class="headlines-container">
+                    <div class="person-name" id="prevName">ALEXANDER SMITH</div>
+                    <div class="main-headline" id="prevHeadline">THE FUTURE OF DESIGN</div>
+                    <div class="sub-headline" id="prevSub">10 Tips for Creative Freedom</div>
+                </div>
+            </div>
+
+            <div class="watermark">MOCK MAGAZINE — NOT REAL</div>
+        </div>
+    </div>
+</div>
+
+<div id="downloadModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-icon">⚠️</div>
+        <h2>Confirm Download</h2>
+        <p>This image will include a <strong>"MOCK MAGAZINE"</strong> watermark. This tool is strictly for entertainment.</p>
+        
+        <div class="checkbox-wrapper">
+            <input type="checkbox" id="termsCheck" onchange="toggleDownloadBtn()">
+            <label for="termsCheck">I agree not to use this for fake news or misleading information.</label>
+        </div>
+
+        <div class="modal-footer">
+            <button class="action-btn btn-outline" onclick="closeDownloadModal()">Cancel</button>
+            <button class="action-btn btn-danger" id="finalDownloadBtn" disabled onclick="proceedDownload()">Download</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-links">
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="disclaimer.html">Disclaimer</a>
+        <a href="contact.html">Contact Us</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 Mock Magazine Generator.</div>
+</footer>
+
+<canvas id="renderCanvas" width="800" height="1120"></canvas>
+
+<script>
+    const inpTitle = document.getElementById('inpTitle');
+    const inpHeadline = document.getElementById('inpHeadline');
+    const inpSub = document.getElementById('inpSub');
+    const inpName = document.getElementById('inpName');
+    const inpTheme = document.getElementById('inpTheme');
+    const inpFile = document.getElementById('inpFile');
+    
+    const magCover = document.getElementById('magCover');
+    const prevTitle = document.getElementById('prevTitle');
+    const prevHeadline = document.getElementById('prevHeadline');
+    const prevSub = document.getElementById('prevSub');
+    const prevName = document.getElementById('prevName');
+    const previewImg = document.getElementById('previewImg');
+    
+    const downloadModal = document.getElementById('downloadModal');
+    const termsCheck = document.getElementById('termsCheck');
+    const finalDownloadBtn = document.getElementById('finalDownloadBtn');
+
+    [inpTitle, inpHeadline, inpSub, inpName].forEach(el => el.addEventListener('input', updatePreview));
+    inpTheme.addEventListener('change', updateTheme);
+    inpFile.addEventListener('change', handleImageUpload);
+
+    const defaultImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 400 600'%3E%3Crect width='400' height='600' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-weight='bold' font-size='20' fill='%239ca3af' text-anchor='middle' dy='.3em'%3EPHOTO PREVIEW%3C/text%3E%3C/svg%3E";
+
+    function updatePreview() {
+        prevTitle.innerText = inpTitle.value || "MAGAZINE";
+        prevHeadline.innerText = inpHeadline.value || "HEADLINE GOES HERE";
+        prevSub.innerText = inpSub.value || "";
+        prevName.innerText = inpName.value || "";
+        
+        // Auto-scale CSS Title dynamically using container units
+        if(inpTitle.value.length > 10) {
+            prevTitle.style.fontSize = "10cqi";
+        } else {
+            prevTitle.style.fontSize = "13cqi";
+        }
+    }
+
+    function updateTheme() { magCover.className = `magazine-cover ${inpTheme.value}`; }
+
+    function handleImageUpload(e) {
+        const file = e.target.files[0];
+        if (file) {
+            if(!file.type.match('image.*')) { alert("Please select a valid image file."); return; }
+            const reader = new FileReader();
+            reader.onload = function(event) { previewImg.src = event.target.result; }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function resetForm() {
+        if(!confirm("Clear all data?")) return;
+        inpTitle.value = "STYLE ICON"; inpHeadline.value = "THE FUTURE OF DESIGN";
+        inpSub.value = "10 Tips for Creative Freedom"; inpName.value = "ALEXANDER SMITH";
+        inpTheme.value = "theme-black-gold"; inpFile.value = ""; previewImg.src = defaultImg;
+        updatePreview(); updateTheme();
+    }
+
+    function openDownloadModal() { termsCheck.checked = false; finalDownloadBtn.disabled = true; downloadModal.style.display = 'flex'; }
+    function closeDownloadModal() { downloadModal.style.display = 'none'; }
+    function toggleDownloadBtn() { finalDownloadBtn.disabled = !termsCheck.checked; }
+    function proceedDownload() { if(!termsCheck.checked) return; closeDownloadModal(); generateCanvas(); }
+
+    function getLines(ctx, text, maxWidth) {
+        if(!text) return [];
+        const words = text.split(' '); let lines = []; let currentLine = words[0];
+        for (let i = 1; i < words.length; i++) {
+            const width = ctx.measureText(currentLine + " " + words[i]).width;
+            if (width < maxWidth) { currentLine += " " + words[i]; } 
+            else { lines.push(currentLine); currentLine = words[i]; }
+        }
+        lines.push(currentLine); return lines;
+    }
+
+    function generateCanvas() {
+        const canvas = document.getElementById('renderCanvas'); const ctx = canvas.getContext('2d');
+        const width = canvas.width; const height = canvas.height; const theme = inpTheme.value;
+        ctx.clearRect(0,0,width,height); ctx.fillStyle = '#eeeeee'; ctx.fillRect(0, 0, width, height);
+
+        const img = new Image(); img.crossOrigin = "anonymous"; img.src = previewImg.src;
+        img.onload = () => { renderContent(ctx, img, width, height, theme); };
+        if (img.complete && img.src !== defaultImg) { renderContent(ctx, img, width, height, theme); }
+    }
+
+    function renderContent(ctx, img, w, h, theme) {
+        drawImageProp(ctx, img, 0, 0, w, h);
+        const titleText = inpTitle.value.toUpperCase(); const headText = inpHeadline.value;
+        const subText = inpSub.value; const nameText = inpName.value.toUpperCase();
+
+        let titleColor = '#d4af37'; let headColor = '#ffffff'; let subColor = '#eeeeee'; let nameColor = '#d4af37';
+        let baseTitleSize = 140; let headFont = '900 95px Inter, Arial';
+        
+        if (theme === 'theme-blue') {
+            titleColor = '#ffffff'; headColor = '#00e5ff'; nameColor = '#ffffff';
+            baseTitleSize = 130; headFont = '800 95px Verdana, sans-serif';
+        } else if (theme === 'theme-red') {
+            titleColor = '#ff0000'; headColor = '#ffffff'; nameColor = '#ff0000';
+            baseTitleSize = 140; headFont = '900 105px Impact, sans-serif';
+        } else if (theme === 'theme-white') {
+            titleColor = '#000000'; headColor = '#000000'; subColor = '#111111'; nameColor = '#111111';
+            baseTitleSize = 120; headFont = '800 95px Helvetica, Arial';
+        }
+
+        ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+
+        let currentTitleSize = baseTitleSize;
+        function getTitleFont(size) {
+            if (theme === 'theme-blue') return `italic 900 ${size}px "Arial Black", Arial`;
+            if (theme === 'theme-red') return `900 ${size}px Impact, sans-serif`;
+            if (theme === 'theme-white') return `300 ${size}px Helvetica, Arial`;
+            return `900 ${size}px "Times New Roman"`;
+        }
+        
+        ctx.font = getTitleFont(currentTitleSize);
+        while (ctx.measureText(titleText).width > w - 60 && currentTitleSize > 40) {
+            currentTitleSize -= 5; ctx.font = getTitleFont(currentTitleSize);
+        }
+
+        if (theme === 'theme-red') {
+            const metrics = ctx.measureText(titleText); ctx.fillStyle = '#ffffff';
+            ctx.fillRect((w/2) - (metrics.width/2) - 30, 40, metrics.width + 60, currentTitleSize + 20);
+            ctx.fillStyle = '#ff0000';
+        } else { ctx.fillStyle = titleColor; }
+        
+        ctx.shadowColor = (theme==='theme-white') ? "transparent" : "rgba(0,0,0,0.6)";
+        ctx.shadowBlur = (theme==='theme-white') ? 0 : 20;
+        ctx.fillText(titleText, w / 2, 50); ctx.shadowBlur = 0;
+
+        ctx.textAlign = 'left'; let currentY = h - 140; 
+        
+        ctx.font = '600 38px Inter, Arial';
+        if(subText) {
+            if(theme === 'theme-red') {
+                 ctx.fillStyle = '#ff0000'; const m = ctx.measureText(subText);
+                 ctx.fillRect(35, currentY - 5, m.width + 30, 55);
+                 ctx.fillStyle = '#ffffff'; ctx.fillText(subText, 50, currentY);
+            } else {
+                ctx.fillStyle = subColor;
+                ctx.shadowColor = (theme==='theme-white') ? "transparent" : "rgba(0,0,0,0.8)";
+                ctx.shadowBlur = (theme==='theme-white') ? 0 : 6;
+                ctx.fillText(subText, 50, currentY); ctx.shadowBlur = 0;
+            }
+            currentY -= 30; 
+        }
+
+        ctx.font = headFont; 
+        const actualHeadText = (theme!=='theme-white' && theme!=='theme-black-gold') ? headText.toUpperCase() : headText;
+        const headLines = getLines(ctx, actualHeadText, w - 90);
+        const headlineLineHeight = (theme === 'theme-red') ? 110 : 100;
+        
+        currentY -= (headLines.length * headlineLineHeight);
+        ctx.fillStyle = headColor;
+        if(theme === 'theme-white') { ctx.shadowColor = "rgba(255,255,255,0.8)"; ctx.shadowBlur = 15; }
+        else { ctx.shadowColor = "rgba(0,0,0,0.7)"; ctx.shadowBlur = 12; }
+        
+        for(let i=0; i<headLines.length; i++) { ctx.fillText(headLines[i], 45, currentY + (i * headlineLineHeight)); }
+        ctx.shadowBlur = 0; currentY -= 70; 
+
+        ctx.font = '800 35px Inter, Arial';
+        if(nameText) {
+            if (theme === 'theme-blue' || theme === 'theme-red') {
+                ctx.fillStyle = (theme === 'theme-blue') ? '#000000' : '#ffffff';
+                const m = ctx.measureText(nameText); ctx.fillRect(35, currentY - 5, m.width + 30, 50);
+                ctx.fillStyle = nameColor; ctx.fillText(nameText, 50, currentY);
+            } else if(theme === 'theme-white'){
+                ctx.fillStyle = 'rgba(255,255,255,0.7)'; const m = ctx.measureText(nameText);
+                ctx.fillRect(35, currentY - 5, m.width + 30, 50);
+                ctx.fillStyle = nameColor; ctx.fillText(nameText, 50, currentY);
+            } else {
+                ctx.fillStyle = nameColor; ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 6;
+                ctx.fillText(nameText, 50, currentY); ctx.shadowBlur = 0;
+            }
+        }
+
+        ctx.textAlign = 'right'; ctx.font = '800 26px Inter, Arial';
+        ctx.fillStyle = (theme === 'theme-white') ? '#000' : (theme === 'theme-blue' ? '#00e5ff' : '#fff');
+        if(theme !== 'theme-white') { ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 5; }
+        ctx.fillText("Exclusive Interview", w - 40, 260); ctx.fillText("Top 10 Trends", w - 40, 310);
+        ctx.fillText("Life & Style", w - 40, 360); ctx.shadowBlur = 0;
+
+        ctx.textAlign = 'center'; ctx.font = '800 22px Inter, Arial'; ctx.fillStyle = 'rgba(0,0,0,0.7)'; 
+        ctx.fillRect((w/2) - 180, h - 50, 360, 40); ctx.fillStyle = '#fff';
+        ctx.fillText("MOCK MAGAZINE — NOT REAL", w / 2, h - 42);
+
+        downloadCanvas(canvas);
+    }
+
+    function downloadCanvas(canvas) {
+        const link = document.createElement('a'); link.download = `mock-magazine-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png', 1.0); link.click();
+    }
+
+    function drawImageProp(ctx, img, x, y, w, h, offsetX, offsetY) {
+        if (arguments.length === 2) { x = y = 0; w = ctx.canvas.width; h = ctx.canvas.height; }
+        offsetX = typeof offsetX === "number" ? offsetX : 0.5; offsetY = typeof offsetY === "number" ? offsetY : 0.5;
+        if (offsetX < 0) offsetX = 0; if (offsetY < 0) offsetY = 0;
+        if (offsetX > 1) offsetX = 1; if (offsetY > 1) offsetY = 1;
+        var iw = img.width, ih = img.height, r = Math.min(w / iw, h / ih), nw = iw * r, nh = ih * r, cx, cy, cw, ch, ar = 1;
+        if (nw < w) ar = w / nw; if (Math.abs(ar - 1) < 1e-14 && nh < h) ar = h / nh;
+        nw *= ar; nh *= ar; cw = iw / (nw / w); ch = ih / (nh / h);
+        cx = (iw - cw) * offsetX; cy = (ih - ch) * offsetY;
+        ctx.drawImage(img, cx, cy, cw, ch, x, y, w, h);
+    }
+</script>
+
+</body>
+</html>
