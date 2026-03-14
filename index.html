@@ -16,6 +16,8 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <script src="https://5gvci.com/act/files/tag.min.js?z=10722092" data-cfasync="false" async></script>
+
     <style>
         /* --- CSS VARIABLES & RESET --- */
         :root {
@@ -35,10 +37,28 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         
+        html { scroll-behavior: smooth; }
+
         body { 
             background-color: var(--bg-color); color: var(--text-color); font-family: var(--font-main);
             min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
         }
+
+        /* --- AD BANNER --- */
+        .top-ad-banner {
+            display: block;
+            width: 100%;
+            background: linear-gradient(90deg, #ff007f, #7928ca);
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 15px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .top-ad-banner:hover { opacity: 0.9; }
 
         /* --- HEADER --- */
         header { 
@@ -76,25 +96,33 @@
         input[type="text"], select {
             padding: 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; font-family: var(--font-main);
             background: #f9fafb; color: #111827; width: 100%; -webkit-appearance: none;
+            transition: all 0.3s ease;
         }
         input[type="text"]:focus, select:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         
         input[type="file"] { 
             padding: 12px; background: #f9fafb; border: 2px dashed #d1d5db; border-radius: 8px; width: 100%; cursor: pointer; 
+            transition: all 0.3s ease;
         }
+        input[type="file"]:hover { border-color: var(--primary); }
 
         .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 25px; }
         .btn-full { grid-column: span 2; }
         
         button.action-btn {
-            padding: 14px; cursor: pointer; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; transition: 0.2s;
+            padding: 14px; cursor: pointer; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; transition: all 0.2s ease;
             display: flex; justify-content: center; align-items: center; text-align: center;
         }
         .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
         .btn-primary:active { transform: scale(0.98); }
+        
         .btn-danger { background: var(--danger); color: white; }
-        .btn-danger:disabled { background: #fca5a5; cursor: not-allowed; }
+        .btn-danger:hover:not(:disabled) { background: #b91c1c; transform: translateY(-1px); }
+        .btn-danger:disabled { background: #fca5a5; cursor: not-allowed; transform: none; }
+        
         .btn-outline { background: white; border: 2px solid #e5e7eb; color: #374151; }
+        .btn-outline:hover { background: #f9fafb; border-color: #d1d5db; }
 
         /* PREVIEW (RIGHT) - FULLY RESPONSIVE USING CONTAINER QUERIES */
         .preview-area {
@@ -102,11 +130,13 @@
         }
 
         .magazine-cover {
-            container-type: inline-size; /* THIS IS THE MAGIC FIX FOR MOBILE SCALING */
+            container-type: inline-size;
             width: 100%; max-width: 450px; aspect-ratio: 3/4.2; position: relative;
             background-color: #ddd; overflow: hidden; box-shadow: var(--shadow-lg);
             border-radius: 8px; user-select: none;
+            transition: transform 0.3s ease;
         }
+        .magazine-cover:hover { transform: translateY(-2px); }
 
         .cover-bg { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
 
@@ -115,7 +145,7 @@
             display: flex; flex-direction: column; justify-content: space-between;
         }
 
-        /* FLUID TYPOGRAPHY BASED ON CONTAINER WIDTH (cqi) */
+        /* FLUID TYPOGRAPHY */
         .mag-title {
             text-align: center; font-size: 13cqi; font-weight: 900; line-height: 1;
             text-transform: uppercase; margin-bottom: 2cqi; width: 100%;
@@ -181,7 +211,7 @@
         .theme-white .sub-headline { color: #111; text-shadow: 0.2cqi 0.2cqi 0px #fff; }
         .theme-white .bullet { color: #000; border-color: #000; text-shadow: none; }
 
-        /* DOWNLOAD MODAL - MOBILE OPTIMIZED */
+        /* DOWNLOAD MODAL */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(4px); z-index: 20000; 
@@ -214,13 +244,18 @@
 
         footer { text-align: center; margin-top: 40px; padding: 25px 15px; background: #fff; border-top: 1px solid #e5e7eb; }
         .footer-links { margin-bottom: 15px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;}
-        .footer-links a { color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.85rem;}
+        .footer-links a { color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.85rem; transition: color 0.3s;}
+        .footer-links a:hover { color: var(--primary-hover); }
         .footer-copy { font-size: 0.8rem; color: #6b7280; }
 
         #renderCanvas { display: none; }
     </style>
 </head>
 <body>
+
+<a href="https://omg10.com/4/10722095" target="_blank" rel="noopener noreferrer" class="top-ad-banner">
+    🎉 Special Offer: Click Here to Explore Amazing Deals! 🎉
+</a>
 
 <header>
     <h1>Mock Magazine Generator</h1>
@@ -324,11 +359,36 @@
         <a href="terms.html">Terms</a>
         <a href="disclaimer.html">Disclaimer</a>
         <a href="contact.html">Contact Us</a>
+        <a href="https://omg10.com/4/10722095" target="_blank" rel="noopener noreferrer" style="color:#ff007f;">Our Partners</a>
     </div>
     <div class="footer-copy">&copy; 2026 Mock Magazine Generator.</div>
 </footer>
 
 <canvas id="renderCanvas" width="800" height="1120"></canvas>
+
+<script>(function(s){s.dataset.zone='10722097',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Popunder 6 Hour Frequency Cap Logic
+        function loadPopunder() {
+            var lastShown = localStorage.getItem('popunder_last_shown');
+            var now = new Date().getTime();
+            var sixHours = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+
+            if (!lastShown || (now - lastShown > sixHours)) {
+                // Execute Popunder Code
+                (function(s){s.dataset.zone='10722090',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+                
+                // Save the current timestamp
+                localStorage.setItem('popunder_last_shown', now);
+            }
+        }
+        
+        // Call the function
+        loadPopunder();
+    });
+</script>
 
 <script>
     const inpTitle = document.getElementById('inpTitle');
@@ -361,7 +421,6 @@
         prevSub.innerText = inpSub.value || "";
         prevName.innerText = inpName.value || "";
         
-        // Auto-scale CSS Title dynamically using container units
         if(inpTitle.value.length > 10) {
             prevTitle.style.fontSize = "10cqi";
         } else {
